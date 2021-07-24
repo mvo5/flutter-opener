@@ -1,0 +1,2 @@
+* persistent logging: ringbuffer like json based with boot count because no rtc?
+* enable hardware watchdog, requires async event loop
