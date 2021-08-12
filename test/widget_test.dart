@@ -11,12 +11,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:opener/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Opener man widget', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(OpenerApp());
 
     // Verify that our counter starts at 0.
-    expect(find.text('Open'), findsOneWidget);
+    expect(find.text('Slide to open'), findsOneWidget);
     expect(find.text('close'), findsNothing);
 
     // Tap the '+' icon and trigger a frame.

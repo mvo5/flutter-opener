@@ -9,7 +9,9 @@ import 'package:crypto/crypto.dart';
 
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:permission_handler/permission_handler.dart';
+// XXX: move to biometric storage
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:slider_button/slider_button.dart';
 
 void main() {
     runApp(OpenerApp());
@@ -81,11 +83,6 @@ class OpenerApp extends StatelessWidget {
     Widget build(BuildContext context) {
 	return MaterialApp(
 	    title: 'Opener',
-	    // XXX: do I need this
-	    theme: ThemeData(
-		primarySwatch: Colors.blue,
-		visualDensity: VisualDensity.adaptivePlatformDensity,
-	    ),
 	    home: OpenerHomePage(title: 'μ Opener'),
 	);
     }
@@ -188,14 +185,18 @@ class _OpenerHomePageState extends State<OpenerHomePage> {
 		padding: EdgeInsets.all(64),
 	    );
 	} else {
-	    return ElevatedButton.icon(
-		label: Text("Open"),
+	    return SliderButton(
+		label: Text("Slide to open"),
 		icon: Icon(Icons.lock_open),
-		style: ElevatedButton.styleFrom(
-		    shape: CircleBorder(),
-		    padding: EdgeInsets.all(64),
+		// XXX: workaround for
+		// https://github.com/anirudhsharma392/Slider-Button/issues/21
+		boxShadow: BoxShadow(
+		    color: Theme.of(context).primaryColor,
+		    blurRadius: 2.0,
+		    spreadRadius: 2.0,
+		    offset: Offset.zero
 		),
-		onPressed: () {
+		action: () {
 		    setState(() {
 			_openerCall = true;
 		    });
@@ -246,7 +247,7 @@ class _OpenerHomePageState extends State<OpenerHomePage> {
 		    children: <Widget>[
 			Text(_statusText),
 			Expanded(child: Container(),),
-			Expanded(child: getOpenOrSpinnerWidget(),),
+			Center(child: getOpenOrSpinnerWidget()),
 			Expanded(child: Container(),),
 		    ],
 		),
