@@ -7,24 +7,52 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:slider_button/slider_button.dart';
 
-import 'package:opener/main.dart';
+import 'package:mockito/annotations.dart';
 
+import 'package:mockito/mockito.dart';
+
+import 'package:muopener/main.dart';
+
+import 'widget_test.mocks.dart';
+
+@GenerateMocks([OpenerApi,FlutterSecureStorage])
 void main() {
-  testWidgets('Opener man widget', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(OpenerApp());
+    testWidgets('Opener main flow with valid config', (WidgetTester tester) async {
+	var storage = MockFlutterSecureStorage();
+	when(storage.read(key: "cfg")).thenAnswer(
+	    (_) async => '{"hostname": "opener", "hmac-key": "hmackey"}'
+	);
+	
+	var opener = MockOpenerApi();
+	when(opener.init("opener", 8877, "hmackey")).thenReturn(0);
+	when(opener.open()).thenAnswer((_) async => "Done");
 
-    // Verify that our counter starts at 0.
-    expect(find.text('Slide to open'), findsOneWidget);
-    expect(find.text('close'), findsNothing);
+	// Build our app
+	var app = OpenerApp();
+	await tester.pumpWidget(app);
 
-    // Tap the '+' icon and trigger a frame.
-    // await tester.tap(find.byIcon(Icons.add));
-    // await tester.pump();
+	// add mocks
+	final state = tester.state(find.byType(OpenerHomePage)) as OpenerHomePageState;
+	state.opener = opener;
+	state.storage = storage;
 
-    // Verify that our counter has incremented.
-    //expect(find.text('0'), findsNothing);
-    //expect(find.text('1'), findsOneWidget);
-  });
+	// Verify that we have a text
+	expect(find.text('Slide to open'), findsOneWidget);
+	expect(find.text('close'), findsNothing);
+
+	// pretend to drag the open slider
+	await tester.drag(find.byType(SliderButton), Offset(500.0, 0.0));
+	// pumpAndSettle cannot be used because of the spinner animation
+	for (int i = 0 ; i<10; i++) {
+	    await tester.pumpWidget(OpenerApp(),  Duration(milliseconds: 100));
+	}
+
+	// Verify that it tries to open the door
+	expect(find.byKey(Key("label_status")), findsOneWidget);
+	var label_status = find.byKey(Key("label_status")).evaluate().first.widget as Text;
+	expect(label_status.data, "Done");
+    });
 }

@@ -19,6 +19,60 @@ void main() {
     runApp(OpenerApp());
 }
 
+class OpenerApi {
+    String host, hmac_key;
+    int port;
+    
+    void init(host, port, hmac_key) {
+	this.host = host;
+	this.port = port;
+	this.hmac_key = hmac_key;
+    }
+    
+    Future<String> open() async {
+	Socket socket;
+	try {
+	    socket = await Socket.connect(this.host, this.port);
+	} catch(error) {
+	    return "cannot connect: $error";
+	}
+	var lineReader = utf8.decoder.bind(socket).transform(LineSplitter());
+	
+	String helo, hmac, result, nonce;
+	String returnStatus = "unset";
+	try {
+	    await for (String data in lineReader) {
+		if (helo == null) {
+		    helo = data;
+		    var sjm =  SignedJsonMessage.fromString(helo, this.hmac_key, "");
+		    if (sjm.payload["version"] != 1) {
+			throw("incorrect protocol version");
+		    }
+		    nonce = sjm.nonce;
+		    
+		    Map<String, String> json_cmd = new Map<String, String>();
+		    json_cmd["cmd"] = "open";
+		    json_cmd["nonce"] = nonce;
+		    var sjm2 = SignedJsonMessage(this.hmac_key, nonce);
+		    sjm2.set_payload(json_cmd);
+		    
+		    await socket.write(sjm2.toString()+"\n");
+		} else if (result == null) {
+		    result = data;
+		    var sjm = SignedJsonMessage.fromString(result, this.hmac_key, nonce);
+		    helo = hmac = result = nonce = "";
+		    socket.destroy();
+		}
+		returnStatus = "Done";
+	    }
+	} catch(error) {
+	    returnStatus = "error: $error";
+	}
+	socket.close();
+	socket.destroy();
+    }
+}
+
 class OpenerApp extends StatelessWidget {
     // This widget is the root of your application.
     @override
@@ -35,10 +89,10 @@ class OpenerHomePage extends StatefulWidget {
     final String title;
     
     @override
-    _OpenerHomePageState createState() => _OpenerHomePageState();
+    OpenerHomePageState createState() => OpenerHomePageState();
 }
 
-class _OpenerHomePageState extends State<OpenerHomePage> {
+class OpenerHomePageState extends State<OpenerHomePage> {
     bool _openerCall = false;
     String _statusText = "Ready";
 
@@ -46,74 +100,40 @@ class _OpenerHomePageState extends State<OpenerHomePage> {
     // XXX: make it a list to support multiple doors
     var cfg = Map<String, dynamic>();
 
-    final storage = new FlutterSecureStorage();
+    // will be mocked in tests
+    OpenerApi opener;
+    FlutterSecureStorage storage;
+
+    void initState() {
+	this.storage = new FlutterSecureStorage();
+	this.opener = new OpenerApi();
+    }
+
     
     Future<String> callOpenerApi() async {
 	// XXX: read early and show indication that a key is known
-	var json_cfg = await storage.read(key: "cfg");
+    	var json_cfg = await storage.read(key: "cfg");
 	if (json_cfg == null) {
 	    return "no configuration yet";
 	};
 	
-	print("got from secure store: $json_cfg");
 	cfg = json.decode(json_cfg);
 	var hmac_key = cfg["hmac-key"];
 	var host = cfg["hostname"];
 	final port = 8877;
-
-	Socket socket;
-	try {
-	    socket = await Socket.connect(host, port);
-	} catch(error) {
-	    return "cannot connect: $error";
-	}
-	print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
-	var lineReader = utf8.decoder.bind(socket).transform(LineSplitter());
-
-	String helo, hmac, result, nonce;
-	String returnStatus = "unset";
-	try {
-	    await for (String data in lineReader) {
-		print("got from stream: $data");
-		if (helo == null) {
-		    helo = data;
-		    var sjm =  SignedJsonMessage.fromString(helo, hmac_key, "");
-		    if (sjm.payload["version"] != 1) {
-			throw("incorrect protocol version");
-		    }
-		    nonce = sjm.nonce;
-		    print("got nonce $nonce");
-		    
-		    Map<String, String> json_cmd = new Map<String, String>();
-		    json_cmd["cmd"] = "open";
-		    json_cmd["nonce"] = nonce;
-		    var sjm2 = SignedJsonMessage(hmac_key, nonce);
-		    sjm2.set_payload(json_cmd);
-		    
-		    await socket.write(sjm2.toString()+"\n");
-		    print("after sent");
-		} else if (result == null) {
-		    print("result");
-		    result = data;
-		    print("result $result");
-		    var sjm = SignedJsonMessage.fromString(result, hmac_key, nonce);
-		    helo = hmac = result = nonce = "";
-		    socket.destroy();
-		}
-		returnStatus = "Done";
-	    }
-	} catch(error) {
-	    returnStatus = "error: $error";
-	}
-	socket.close();
-	socket.destroy();
+	opener.init(host, port, hmac_key);
 	
+	// XXX: use exceptions?
+	var returnStatus = opener.open();
 	return returnStatus;
     }
 
     void doCallOpenerApi() async {
+	setState(() {
+	    _statusText = "Opening...";
+	});
+
 	var newStatusText = await callOpenerApi();
-	print("new status text: $newStatusText");
 	setState(() {
 	    _openerCall = false;
 	    _statusText = newStatusText;
@@ -154,7 +174,6 @@ class _OpenerHomePageState extends State<OpenerHomePage> {
 	    return;
 	}
 	var json_cfg = cameraScanResult;
-	print("scan result: $cameraScanResult");
 	// XXX: do basic validation?
 	await storage.write(key: "cfg", value: json_cfg);
     }
@@ -187,7 +206,7 @@ class _OpenerHomePageState extends State<OpenerHomePage> {
 		child: Column(
 		    crossAxisAlignment: CrossAxisAlignment.center,
 		    children: <Widget>[
-			Text(_statusText),
+			Text(_statusText, key: Key("label_status")),
 			Expanded(child: Container(),),
 			Center(child: getOpenOrSpinnerWidget()),
 			Expanded(child: Container(),),
