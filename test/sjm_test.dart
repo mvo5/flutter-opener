@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:opener/main.dart';
+import 'package:opener/sjm.dart';
 
 void main() {
     test('SignedJsonMessage signed smoke', () {
