@@ -28,8 +28,8 @@ void main() {
 	);
 	
 	var opener = MockOpenerApi();
-	when(opener.init("opener", 8877, "hmackey")).thenReturn(0);
-	when(opener.open()).thenAnswer((_) async => "Done");
+	when(opener.init("opener", 8877, "hmackey", "unknown")).thenReturn(0);
+	when(opener.open()).thenAnswer((_) async => "Opening...");
 
 	// Build our app
 	var app = OpenerApp();
@@ -54,6 +54,6 @@ void main() {
 	// Verify that it tries to open the door
 	expect(find.byKey(Key("label_status")), findsOneWidget);
 	var label_status = find.byKey(Key("label_status")).evaluate().first.widget as Text;
-	expect(label_status.data, "Done");
+	expect(label_status.data, "Opening...");
     });
 }

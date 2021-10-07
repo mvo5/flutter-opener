@@ -5,13 +5,14 @@ import 'dart:io';
 import 'sjm.dart';
 
 class OpenerApi {
-    String host, hmac_key;
+    String host, hmac_key, device_info;
     int port;
     
-    void init(host, port, hmac_key) {
+    void init(host, port, hmac_key, device_info) {
 	this.host = host;
 	this.port = port;
 	this.hmac_key = hmac_key;
+	this.device_info = device_info;
     }
     
     Future<String> open() async {
@@ -34,10 +35,11 @@ class OpenerApi {
 			throw("incorrect protocol version");
 		    }
 		    nonce = sjm.nonce;
-		    
+
 		    Map<String, String> json_cmd = new Map<String, String>();
 		    json_cmd["cmd"] = "open";
 		    json_cmd["nonce"] = nonce;
+		    json_cmd["device-info"] = this.device_info;
 		    var sjm2 = SignedJsonMessage(this.hmac_key, nonce);
 		    sjm2.set_payload(json_cmd);
 		    
@@ -55,5 +57,6 @@ class OpenerApi {
 	}
 	socket.close();
 	socket.destroy();
+	return returnStatus;
     }
 }

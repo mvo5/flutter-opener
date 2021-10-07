@@ -12,6 +12,8 @@ import 'package:permission_handler/permission_handler.dart';
 // XXX: move to biometric storage
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:slider_button/slider_button.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+
 
 import 'sjm.dart';
 import 'api.dart';
@@ -40,6 +42,7 @@ class OpenerHomePage extends StatefulWidget {
 }
 
 class OpenerHomePageState extends State<OpenerHomePage> {
+    final deviceInfo = DeviceInfoPlugin();
     bool _openerCall = false;
     String _statusText = "Ready";
 
@@ -65,10 +68,18 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	};
 	
 	cfg = json.decode(json_cfg);
-	var hmac_key = cfg["hmac-key"];
-	var host = cfg["hostname"];
+	final hmac_key = cfg["hmac-key"];
+	final host = cfg["hostname"];
 	final port = 8877;
-	opener.init(host, port, hmac_key);
+
+	// XXX: ideally we would get the "device_name" here but flutter
+	// seems to have no way to get it
+	var device_info = "unknown";
+	if (Platform.isAndroid) {
+	    final androidInfo = await deviceInfo.androidInfo;
+	    device_info = androidInfo.model+"/"+androidInfo.host;
+	}
+	opener.init(host, port, hmac_key, device_info);
 	
 	// XXX: use exceptions?
 	var returnStatus = opener.open();
