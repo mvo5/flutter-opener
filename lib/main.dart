@@ -64,7 +64,11 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     readCfg() async {
 	final json_cfg = await storage.read(key: "cfg");
 	setState(() {
-	    this.cfg = json.decode(json_cfg);
+	    if (json_cfg != null) {
+		this.cfg = json.decode(json_cfg);
+	    } else {
+		this.cfg.clear();
+	    };
 	});
     }
     
@@ -154,10 +158,19 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	await readCfg();
     }
 
+    Future clearSecret() async {
+	await storage.delete(key: "cfg");
+	await readCfg();
+    }
+
     void onSelectedClick(String value) {
 	switch (value) {
 	case 'Scan settings':
 	    scanSecret();
+	    break;
+	case 'Clear settings':
+	    clearSecret();
+	    break;
 	}
     }
     
@@ -170,7 +183,11 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 		    PopupMenuButton<String>(
 			onSelected: onSelectedClick,
 			itemBuilder: (BuildContext context) {
-			    return {'Scan settings'}.map((String choice) {
+			    return {
+				'Scan settings',
+				'',
+				'Clear settings',
+			    }.map((String choice) {
 				return PopupMenuItem<String>(
 				    value: choice,
 				    child: Text(choice),
