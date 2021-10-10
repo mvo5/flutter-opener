@@ -46,7 +46,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     bool _openerCall = false;
     String _statusText = "Ready";
 
-    // read from the security store
+    // this is read from the security store at startup
     // XXX: make it a list to support multiple doors
     var cfg = Map<String, dynamic>();
 
@@ -55,19 +55,20 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     FlutterSecureStorage storage;
 
     void initState() {
+	super.initState();
 	this.storage = new FlutterSecureStorage();
 	this.opener = new OpenerApi();
+	readCfg();
     }
 
+    readCfg() async {
+	final json_cfg = await storage.read(key: "cfg");
+	setState(() {
+	    this.cfg = json.decode(json_cfg);
+	});
+    }
     
     Future<String> callOpenerApi() async {
-	// XXX: read early and show indication that a key is known
-    	var json_cfg = await storage.read(key: "cfg");
-	if (json_cfg == null) {
-	    return "no configuration yet";
-	};
-	
-	cfg = json.decode(json_cfg);
 	final hmac_key = cfg["hmac-key"];
 	final host = cfg["hostname"];
 	final port = 8877;
@@ -98,8 +99,23 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	});
     }
 
-    Widget getOpenOrSpinnerWidget(){
-	if(_openerCall) {
+    Widget getOpenOrSpinnerWidget() {
+	if (cfg.length == 0) {
+	    return Column(
+		crossAxisAlignment: CrossAxisAlignment.center,
+		children: <Widget>[
+		    Text("No configuration yet"),
+		    Container(
+			child: ElevatedButton(
+			    child: Text("Scan setting"),
+			    onPressed: () {
+				scanSecret();
+			    }
+			),
+		    ),
+		],
+	    );
+	} else if(_openerCall) {
 	    return new Container(
 		child: CircularProgressIndicator(),
 		padding: EdgeInsets.all(64),
@@ -134,6 +150,8 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	var json_cfg = cameraScanResult;
 	// XXX: do basic validation?
 	await storage.write(key: "cfg", value: json_cfg);
+
+	await readCfg();
     }
 
     void onSelectedClick(String value) {

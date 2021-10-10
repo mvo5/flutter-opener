@@ -39,6 +39,10 @@ void main() {
 	final state = tester.state(find.byType(OpenerHomePage)) as OpenerHomePageState;
 	state.opener = opener;
 	state.storage = storage;
+	// readCfg must be called again with fake storage
+	state.readCfg();
+	// XXX: why does "await tester.pumpAndSettle()" does not work here ?
+	await tester.pumpWidget(OpenerApp(),  Duration(milliseconds: 100));
 
 	// Verify that we have a text
 	expect(find.text('Slide to open'), findsOneWidget);
@@ -48,7 +52,7 @@ void main() {
 	await tester.drag(find.byType(SliderButton), Offset(500.0, 0.0));
 	// pumpAndSettle cannot be used because of the spinner animation
 	for (int i = 0 ; i<10; i++) {
-	    await tester.pumpWidget(OpenerApp(),  Duration(milliseconds: 100));
+	    await tester.pumpWidget(app,  Duration(milliseconds: 100));
 	}
 
 	// Verify that it tries to open the door
