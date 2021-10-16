@@ -44,11 +44,11 @@ class OpenerHomePage extends StatefulWidget {
 class OpenerHomePageState extends State<OpenerHomePage> {
     final deviceInfo = DeviceInfoPlugin();
     bool _openerCall = false;
-    String _statusText = "Ready";
+    String _statusText = "";
 
     // this is read from the security store at startup
     // XXX: make it a list to support multiple doors
-    var cfg = Map<String, dynamic>();
+    Map<String, dynamic> cfg = null;
 
     // will be mocked in tests
     OpenerApi opener;
@@ -67,8 +67,9 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	    if (json_cfg != null) {
 		this.cfg = json.decode(json_cfg);
 	    } else {
-		this.cfg.clear();
+		this.cfg = Map<String, dynamic>();
 	    };
+	    _statusText = "Ready";
 	});
     }
     
@@ -104,7 +105,13 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     }
 
     Widget getOpenOrSpinnerWidget() {
-	if (cfg.length == 0) {
+	if (cfg == null) {
+	    return Column(
+		crossAxisAlignment: CrossAxisAlignment.center,
+		children: <Widget>[
+		    Text("Initializing..."),
+		]);
+	}else if (cfg.length == 0) {
 	    return Column(
 		crossAxisAlignment: CrossAxisAlignment.center,
 		children: <Widget>[
