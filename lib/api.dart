@@ -22,7 +22,12 @@ class OpenerApi {
 	} catch(error) {
 	    return "cannot connect: $error";
 	}
-	var lineReader = utf8.decoder.bind(socket).transform(LineSplitter());
+	var lineReader = utf8.decoder.bind(socket)
+	    .transform(LineSplitter())
+	    .timeout(Duration(seconds: 20), onTimeout: (_) {
+		print("timeout in line reader, closing socket");
+		socket.close();
+	    });
 	
 	String helo, hmac, result, nonce;
 	String returnStatus = "unset";
