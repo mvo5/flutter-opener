@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:f_logs/f_logs.dart';
 
 import 'sjm.dart';
 
@@ -16,21 +17,29 @@ class OpenerApi {
     }
     
     Future<String> open() async {
+	FLog.debug(text: "open(${this.host})");
 	Socket socket;
 	try {
 	    socket = await Socket.connect(this.host, this.port);
 	} on SocketException catch(error) {
+	    FLog.error(
+		text: "socket exception for ${this.host}",
+		exception: error);
 	    // XXX: android specific
 	    if (error.osError.errorCode == 7) {
 		return "cannot find ${this.host}: not fully connected yet?";
 	    }
 	    throw(error);
 	} catch(error) {
+	    FLog.error(
+		text: "cannot connect to ${this.host}",
+		exception: error);
 	    return "cannot connect to ${this.host}: $error";
 	}
 	var lineReader = utf8.decoder.bind(socket)
 	    .transform(LineSplitter())
 	    .timeout(Duration(seconds: 20), onTimeout: (_) {
+		FLog.error(text: "timeout (20s) in line reader, closing socket");
 		print("timeout in line reader, closing socket");
 		socket.close();
 	    });
@@ -43,6 +52,8 @@ class OpenerApi {
 		    helo = data;
 		    var sjm =  SignedJsonMessage.fromString(helo, this.hmac_key, "");
 		    if (sjm.payload["version"] != 1) {
+			FLog.error(text: "incorrect protocol version");
+			FLog.error(text: "from $sjm");
 			throw("incorrect protocol version");
 		    }
 		    nonce = sjm.nonce;
@@ -64,6 +75,7 @@ class OpenerApi {
 		returnStatus = "Done";
 	    }
 	} catch(error) {
+	    FLog.error(text: "error during line reader", exception: error);
 	    returnStatus = "error: $error";
 	}
 	socket.close();

@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:slider_button/slider_button.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:f_logs/f_logs.dart';
 
 
 import 'sjm.dart';
@@ -174,6 +175,11 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	await readCfg();
     }
 
+    void showLogs() {
+	// XXX: open window, show log text in window
+	FLog.printLogs();
+    }
+
     void onSelectedClick(String value) {
 	switch (value) {
 	case 'Scan settings':
@@ -181,6 +187,9 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	    break;
 	case 'Clear settings':
 	    clearSecret();
+	    break;
+	case 'Show logs':
+	    showLogs();
 	    break;
 	}
     }
@@ -198,6 +207,8 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 				'Scan settings',
 				'',
 				'Clear settings',
+				' ',
+				'Show logs',
 			    }.map((String choice) {
 				return PopupMenuItem<String>(
 				    value: choice,
