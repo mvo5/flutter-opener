@@ -78,6 +78,10 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	final host = cfg["hostname"];
 	final port = 8877;
 
+	// XXX: add code that tries to reach the "host" before
+	//      calling the opener API to avoid the issue that
+	//      e.g. the network may not be connected yet?
+
 	// XXX: ideally we would get the "device_name" here but flutter
 	// seems to have no way to get it
 	var device_info = "unknown";

@@ -19,10 +19,21 @@ class OpenerApi {
 	Socket socket;
 	try {
 	    socket = await Socket.connect(this.host, this.port);
+	} on SocketException catch(error) {
+	    // XXX: android specific
+	    if (error.osError.errorCode == 7) {
+		return "cannot find ${this.host}: not fully connected yet?";
+	    }
+	    throw(error);
 	} catch(error) {
-	    return "cannot connect: $error";
+	    return "cannot connect to ${this.host}: $error";
 	}
-	var lineReader = utf8.decoder.bind(socket).transform(LineSplitter());
+	var lineReader = utf8.decoder.bind(socket)
+	    .transform(LineSplitter())
+	    .timeout(Duration(seconds: 20), onTimeout: (_) {
+		print("timeout in line reader, closing socket");
+		socket.close();
+	    });
 	
 	String helo, hmac, result, nonce;
 	String returnStatus = "unset";
