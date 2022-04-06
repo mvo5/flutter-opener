@@ -187,11 +187,11 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	var buffer = StringBuffer();
 	var cfg = FLog.getDefaultConfigurations();
 	setState(() {
-	    _logsText = "";
+	    buffer.write("Current logs:");
 	    for (var log in logs) {
 		buffer.write(Formatter.format(log, cfg));
 	    }
-	    _logsText += buffer.toString();
+	    _logsText = buffer.toString();
 	});
     }
 
@@ -230,12 +230,10 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 			itemBuilder: (BuildContext context) {
 			    return {
 				'Scan settings',
-				'',
-				'Clear settings',
-				' ',
 				'Show logs',
-				'  ',
+				'',
 				'Clear logs',
+				'Clear settings',
 			    }.map((String choice) {
 				return PopupMenuItem<String>(
 				    value: choice,
@@ -253,8 +251,8 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 			Center(child: getOpenOrSpinnerWidget()),
 			Expanded(
 			    child: SingleChildScrollView(
-				scrollDirection: Axis.vertical,//.horizontal
-				child: Text(_logsText),
+				scrollDirection: Axis.vertical,
+				child: Text(_logsText, textAlign: TextAlign.left,),
 			    ),
 			),
 		    ],
