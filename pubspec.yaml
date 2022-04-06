@@ -28,7 +28,7 @@ dependencies:
   qrscan: ^0.3.2
   permission_handler: ^8.2.5
   flutter_secure_storage: ^4.2.1
-  slider_button: ^1.0.0
+  slider_button: ^2.0.0
   device_info_plus: ^3.1.0
   f_logs: ^2.0.0
 

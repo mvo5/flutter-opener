@@ -150,6 +150,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 		    offset: Offset.zero
 		),
 		action: () {
+		    FLog.debug(text: "slider button action");
 		    setState(() {
 			_openerCall = true;
 		    });
