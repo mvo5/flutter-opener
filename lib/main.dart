@@ -46,6 +46,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     final deviceInfo = DeviceInfoPlugin();
     bool _openerCall = false;
     String _statusText = "";
+    String _logsText = "";
 
     // this is read from the security store at startup
     // XXX: make it a list to support multiple doors
@@ -175,9 +176,29 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	await readCfg();
     }
 
-    void showLogs() {
-	// XXX: open window, show log text in window
+    void showLogs() async {
+	// to console
 	FLog.printLogs();
+
+	// to the widget
+	var formatter = Formatter();
+	var logs = await FLog.getAllLogs();
+	var buffer = StringBuffer();
+	var cfg = FLog.getDefaultConfigurations();
+	setState(() {
+	    _logsText = "";
+	    for (var log in logs) {
+		buffer.write(Formatter.format(log, cfg));
+	    }
+	    _logsText += buffer.toString();
+	});
+    }
+
+    void clearLogs() async {
+	setState(() {
+	    _logsText = "";
+	});
+	await FLog.clearLogs();
     }
 
     void onSelectedClick(String value) {
@@ -190,6 +211,9 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	    break;
 	case 'Show logs':
 	    showLogs();
+	    break;
+	case 'Clear logs':
+	    clearLogs();
 	    break;
 	}
     }
@@ -209,6 +233,8 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 				'Clear settings',
 				' ',
 				'Show logs',
+				'  ',
+				'Clear logs',
 			    }.map((String choice) {
 				return PopupMenuItem<String>(
 				    value: choice,
@@ -224,7 +250,12 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 			Text(_statusText, key: Key("label_status")),
 			Expanded(child: Container(),),
 			Center(child: getOpenOrSpinnerWidget()),
-			Expanded(child: Container(),),
+			Expanded(
+			    child: SingleChildScrollView(
+				scrollDirection: Axis.vertical,//.horizontal
+				child: Text(_logsText),
+			    ),
+			),
 		    ],
 		),
 	    ),

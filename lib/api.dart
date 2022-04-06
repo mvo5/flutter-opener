@@ -80,6 +80,8 @@ class OpenerApi {
 	}
 	socket.close();
 	socket.destroy();
+
+	FLog.info(text: "done open(), returning $returnStatus");
 	return returnStatus;
     }
 }
