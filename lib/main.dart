@@ -185,10 +185,20 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	var formatter = Formatter();
 	var logs = await FLog.getAllLogs();
 	var buffer = StringBuffer();
-	var cfg = FLog.getDefaultConfigurations();
+	var cfg = FLog.getDefaultConfigurations()
+	  ..formatType = FormatType.FORMAT_CUSTOM
+	  ..customClosingDivider = ":"
+	  ..timestampFormat = TimestampFormat.TIME_FORMAT_FULL_3
+	  ..fieldOrderFormatCustom = [
+	      FieldName.TIMESTAMP,
+	      FieldName.LOG_LEVEL,
+	      FieldName.TEXT,
+	      FieldName.EXCEPTION,
+	      FieldName.STACKTRACE
+	  ];
 	setState(() {
-	    buffer.write("Current logs:");
-	    for (var log in logs) {
+	    buffer.write("Current logs:\n");
+	    for (var log in logs.reversed) {
 		buffer.write(Formatter.format(log, cfg));
 	    }
 	    _logsText = buffer.toString();
