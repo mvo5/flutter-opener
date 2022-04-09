@@ -29,7 +29,7 @@ class OpenerApi {
 	    if (error.osError.errorCode == 7) {
 		return "cannot find ${this.host}: not fully connected yet?";
 	    }
-	    throw(error);
+	    return "cannot connect (socket error) to ${this.host}: $error";
 	} catch(error) {
 	    FLog.error(
 		text: "cannot connect to ${this.host}",
