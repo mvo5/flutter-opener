@@ -20,6 +20,12 @@ class OpenerApi {
 	FLog.debug(text: "open(${this.host})");
 	Socket socket;
 	try {
+	    // XXX: there is a potential race in the esp32 opener code
+	    // on errno=111 (connection refused) - it may mean that
+	    // the esp32 is not listening on the socket just now but
+	    // instead had a timeout and is feeding the watchdog. it
+	    // should be hard to hit this race but maybe the code
+	    // should auto-retry on 111?
 	    socket = await Socket.connect(this.host, this.port);
 	} on SocketException catch(error) {
 	    FLog.error(
@@ -28,6 +34,9 @@ class OpenerApi {
 	    // XXX: android specific
 	    if (error.osError.errorCode == 7) {
 		return "cannot find ${this.host}: not fully connected yet?";
+	    }
+	    if (error.osError.errorCode == 111) {
+		return "cannot connect ${this.host}: $error (esp32 doing the watchdog race?)";
 	    }
 	    return "cannot connect (socket error) to ${this.host}: $error";
 	} catch(error) {
