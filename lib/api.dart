@@ -27,6 +27,7 @@ class OpenerApi {
 	    // should be hard to hit this race but maybe the code
 	    // should auto-retry on 111?
 	    socket = await Socket.connect(this.host, this.port);
+	    FLog.debug(text: "socket connection established");
 	} on SocketException catch(error) {
 	    FLog.error(
 		text: "socket exception for ${this.host}",
@@ -57,6 +58,7 @@ class OpenerApi {
 	String returnStatus = "unset";
 	try {
 	    await for (String data in lineReader) {
+		FLog.debug(text: "line $data read");
 		if (helo == null) {
 		    helo = data;
 		    var sjm =  SignedJsonMessage.fromString(helo, this.hmac_key, "");
