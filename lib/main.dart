@@ -47,6 +47,26 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     bool _openerCall = false;
     String _statusText = "";
     String _logsText = "";
+    final logCfg = FLog.getDefaultConfigurations()
+	  ..formatType = FormatType.FORMAT_CUSTOM
+	  ..customClosingDivider = ":"
+          ..timestampFormat = TimestampFormat.TIME_FORMAT_FULL_3
+          // XXX: make configurable
+	  ..activeLogLevel = LogLevel.DEBUG
+	  ..logLevelsEnabled = [
+	      LogLevel.DEBUG,
+	      LogLevel.INFO,
+	      LogLevel.WARNING,
+	      LogLevel.ERROR,
+	      LogLevel.SEVERE
+          ]
+	  ..fieldOrderFormatCustom = [
+	      FieldName.TIMESTAMP,
+	      FieldName.LOG_LEVEL,
+	      FieldName.TEXT,
+	      FieldName.EXCEPTION,
+	      FieldName.STACKTRACE
+	  ];
 
     // this is read from the security store at startup
     // XXX: make it a list to support multiple doors
@@ -58,9 +78,15 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 
     void initState() {
 	super.initState();
+	initLogs();
+
 	this.storage = new FlutterSecureStorage();
 	this.opener = new OpenerApi();
 	readCfg();
+    }
+
+    initLogs() async {
+	await FLog.applyConfigurations(logCfg);
     }
 
     readCfg() async {
@@ -185,21 +211,10 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	var formatter = Formatter();
 	var logs = await FLog.getAllLogs();
 	var buffer = StringBuffer();
-	var cfg = FLog.getDefaultConfigurations()
-	  ..formatType = FormatType.FORMAT_CUSTOM
-	  ..customClosingDivider = ":"
-	  ..timestampFormat = TimestampFormat.TIME_FORMAT_FULL_3
-	  ..fieldOrderFormatCustom = [
-	      FieldName.TIMESTAMP,
-	      FieldName.LOG_LEVEL,
-	      FieldName.TEXT,
-	      FieldName.EXCEPTION,
-	      FieldName.STACKTRACE
-	  ];
 	setState(() {
 	    buffer.write("Current logs:\n");
 	    for (var log in logs.reversed) {
-		buffer.write(Formatter.format(log, cfg));
+		buffer.write(Formatter.format(log, logCfg));
 	    }
 	    _logsText = buffer.toString();
 	});
