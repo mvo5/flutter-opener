@@ -12,7 +12,7 @@ class SignedJsonMessage {
     SignedJsonMessage(this.key, this._nonce) {
 	this._header =  {
             "ver": "1",
-            "alg": "HS512",
+            "alg": "HS256",
 	    "nonce": this._nonce,
 	};
 	this._payload = {};
@@ -29,7 +29,7 @@ class SignedJsonMessage {
 	String hp = base64.encode(utf8.encode(jsonEncode(this._header))) +
 	    "." +
 	    base64.encode(utf8.encode(jsonEncode(this._payload)));
-	var hmac = new Hmac(sha512, utf8.encode(this.key));
+	var hmac = new Hmac(sha256, utf8.encode(this.key));
 	var digest = hmac.convert(utf8.encode(hp));
 	return hp + "." + base64.encode(digest.bytes);
     }
@@ -40,7 +40,7 @@ class SignedJsonMessage {
 	var encoded_header_payload = s.substring(0,idx).trim();
 	var encoded_signature = s.substring(idx+1).trim();
 	var recv_sig = base64.decode(encoded_signature);
-	var hmac = new Hmac(sha512, utf8.encode(key));
+	var hmac = new Hmac(sha256, utf8.encode(key));
 	var calculated_sig = hmac.convert(utf8.encode(encoded_header_payload));
 	if (calculated_sig.bytes.toString() != recv_sig.toString()) {
 	    throw("incorrect signature");

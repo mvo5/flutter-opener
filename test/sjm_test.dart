@@ -10,7 +10,7 @@ void main() {
     });
 
     test('SignedJsonMessage.from_string', () {
-	var s = "eyJub25jZSI6ICJub25jZSIsICJ2ZXIiOiAiMSIsICJhbGciOiAiSFM1MTIifQ==.e30=.jWvOyRuz0lSMFRqkpPXj+nsvDp+gS7Xucg7w5WX6UdoZIq8FbSBR6wKS9B0TGzzr4/3vMnVSBRov0dkQWYL/yw==";
+	var s = "eyJ2ZXIiOiAiMSIsICJhbGciOiAiSFMyNTYiLCAibm9uY2UiOiAibm9uY2UifQ==.e30=.iCQB3KZ4Kd9wnDrhYtTF/TBX3iJLFgApBfX+wMGw5hY=";
 	var sjm = SignedJsonMessage.fromString(s, "key", "nonce");
 	// XXX: test more
 	expect(sjm.payload, equals({}));
