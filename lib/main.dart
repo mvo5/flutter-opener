@@ -14,7 +14,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:slider_button/slider_button.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:f_logs/f_logs.dart';
-
+import 'package:wifi_iot/wifi_iot.dart';
+import 'package:open_settings/open_settings.dart';
 
 import 'sjm.dart';
 import 'api.dart';
@@ -46,6 +47,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     final deviceInfo = DeviceInfoPlugin();
     bool _openerCall = false;
     String _statusText = "";
+    String _wifiStatusText = "";
     String _logsText = "";
     final logCfg = FLog.getDefaultConfigurations()
 	  ..formatType = FormatType.FORMAT_CUSTOM
@@ -83,6 +85,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	this.storage = new FlutterSecureStorage();
 	this.opener = new OpenerApi();
 	readCfg();
+	initWifi();
     }
 
     initLogs() async {
@@ -98,6 +101,21 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 		this.cfg = Map<String, dynamic>();
 	    };
 	    _statusText = "Ready";
+	});
+    }
+
+    initWifi() async {
+	var connected = await WiFiForIoTPlugin.isConnected();
+	var ssid = await WiFiForIoTPlugin.getSSID();
+	// XXX2: subscribe to network change events
+	// XXX: compare cfg["ssid"] to connected wifi and warn if different
+	// but this is async
+	setState(() {
+	    if (connected) {
+		_wifiStatusText = "Connected to ${ssid}";
+	    } else {
+		_wifiStatusText = "NOT connected to wifi";
+	    }
 	});
     }
     
@@ -280,6 +298,23 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 				child: Text(_logsText, textAlign: TextAlign.left,),
 			    ),
 			),
+			Padding(
+			    padding: const EdgeInsets.all(8.0),
+			    child: Row(
+				mainAxisAlignment: MainAxisAlignment.spaceBetween,
+				children: <Widget>[
+				    Text(_wifiStatusText, key: Key("label_wifi")),
+				    ElevatedButton(
+					onPressed: () {
+					    OpenSettings.openWIFISetting();
+					},
+					child: Center(
+					    child: Text('Open Wi-fi settings'),
+					),
+				    ),
+				],
+			    ),
+			)
 		    ],
 		),
 	    ),
