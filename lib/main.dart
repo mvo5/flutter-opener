@@ -14,7 +14,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:slider_button/slider_button.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:f_logs/f_logs.dart';
-
+import 'package:open_settings/open_settings.dart';
 
 import 'sjm.dart';
 import 'api.dart';
@@ -229,6 +229,9 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 
     void onSelectedClick(String value) {
 	switch (value) {
+	case 'Open WiFi settings':
+	    OpenSettings.openWIFISetting();
+	    break;
 	case 'Scan settings':
 	    scanSecret();
 	    break;
@@ -254,6 +257,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 			onSelected: onSelectedClick,
 			itemBuilder: (BuildContext context) {
 			    return {
+				'Open WiFi settings',
 				'Scan settings',
 				'Show logs',
 				'',
