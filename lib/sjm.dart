@@ -5,20 +5,22 @@ import 'package:crypto/crypto.dart';
 
 class SignedJsonMessage {
     String key;
-    String _nonce;
-    Map<String, String> _header;
-    Map<String, dynamic> _payload;
+    String? _nonce;
+    late Map<String, String> _header;
+    late Map<String, dynamic> _payload;
 
-    SignedJsonMessage(this.key, this._nonce) {
+    SignedJsonMessage(String this.key, String? this._nonce) {
 	this._header =  {
             "ver": "1",
             "alg": "HS256",
-	    "nonce": this._nonce,
 	};
+        if (this._nonce != null) {
+            this._header["nonce"] = this._nonce!;
+        }
 	this._payload = {};
     }
 
-    String get nonce => _header["nonce"];
+    String? get nonce => _header["nonce"];
     Map<String, dynamic> get payload => _payload;
     
     void set_payload(Map<String, dynamic> payload) {
@@ -34,7 +36,7 @@ class SignedJsonMessage {
 	return hp + "." + base64.encode(digest.bytes);
     }
 
-    factory SignedJsonMessage.fromString(String s, String key, String expected_nonce) {
+    factory SignedJsonMessage.fromString(String s, String key, String? expected_nonce) {
 	// equivalent to s.rsplit(".", 1)
 	int idx = s.lastIndexOf(".");
 	var encoded_header_payload = s.substring(0,idx).trim();
@@ -50,7 +52,7 @@ class SignedJsonMessage {
 	var encoded_payload = encoded_header_payload.substring(idx+1).trim();
 	var header = jsonDecode(utf8.decode(base64.decode(encoded_header)));
 	var payload = jsonDecode(utf8.decode(base64.decode(encoded_payload)));
-	if (expected_nonce != "") {
+	if (expected_nonce != null) {
 	    if (header["nonce"] != expected_nonce) {
 		throw("incorrect nonce");
 	    }
