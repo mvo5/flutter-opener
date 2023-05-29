@@ -213,11 +213,12 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	var buffer = StringBuffer();
 	setState(() {
 	    buffer.write("Current logs:\n");
-	    for (var log in logs.reversed) {
+	    for (var log in logs) {
 		buffer.write(Formatter.format(log, logCfg));
 	    }
 	    _logsText = buffer.toString();
 	});
+        
     }
 
     void clearLogs() async {
@@ -281,6 +282,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 			Expanded(
 			    child: SingleChildScrollView(
 				scrollDirection: Axis.vertical,
+                                reverse: true,
 				child: Text(_logsText, textAlign: TextAlign.left,),
 			    ),
 			),
