@@ -5,11 +5,11 @@
 // @dart=2.19
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i4;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:muopener/api.dart' as _i2;
+import 'package:muopener/api.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -22,10 +22,72 @@ import 'package:muopener/api.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeIOSOptions_0 extends _i1.SmartFake implements _i2.IOSOptions {
+  _FakeIOSOptions_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeAndroidOptions_1 extends _i1.SmartFake
+    implements _i2.AndroidOptions {
+  _FakeAndroidOptions_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeLinuxOptions_2 extends _i1.SmartFake implements _i2.LinuxOptions {
+  _FakeLinuxOptions_2(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeWindowsOptions_3 extends _i1.SmartFake
+    implements _i2.WindowsOptions {
+  _FakeWindowsOptions_3(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeWebOptions_4 extends _i1.SmartFake implements _i2.WebOptions {
+  _FakeWebOptions_4(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeMacOsOptions_5 extends _i1.SmartFake implements _i2.MacOsOptions {
+  _FakeMacOsOptions_5(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [OpenerApi].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockOpenerApi extends _i1.Mock implements _i2.OpenerApi {
+class MockOpenerApi extends _i1.Mock implements _i3.OpenerApi {
   MockOpenerApi() {
     _i1.throwOnMissingStub(this);
   }
@@ -102,31 +164,82 @@ class MockOpenerApi extends _i1.Mock implements _i2.OpenerApi {
         returnValueForMissingStub: null,
       );
   @override
-  _i3.Future<String> open() => (super.noSuchMethod(
+  _i4.Future<String> open() => (super.noSuchMethod(
         Invocation.method(
           #open,
           [],
         ),
-        returnValue: _i3.Future<String>.value(''),
-      ) as _i3.Future<String>);
+        returnValue: _i4.Future<String>.value(''),
+      ) as _i4.Future<String>);
 }
 
 /// A class which mocks [FlutterSecureStorage].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockFlutterSecureStorage extends _i1.Mock
-    implements _i4.FlutterSecureStorage {
+    implements _i2.FlutterSecureStorage {
   MockFlutterSecureStorage() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<void> write({
+  _i2.IOSOptions get iOptions => (super.noSuchMethod(
+        Invocation.getter(#iOptions),
+        returnValue: _FakeIOSOptions_0(
+          this,
+          Invocation.getter(#iOptions),
+        ),
+      ) as _i2.IOSOptions);
+  @override
+  _i2.AndroidOptions get aOptions => (super.noSuchMethod(
+        Invocation.getter(#aOptions),
+        returnValue: _FakeAndroidOptions_1(
+          this,
+          Invocation.getter(#aOptions),
+        ),
+      ) as _i2.AndroidOptions);
+  @override
+  _i2.LinuxOptions get lOptions => (super.noSuchMethod(
+        Invocation.getter(#lOptions),
+        returnValue: _FakeLinuxOptions_2(
+          this,
+          Invocation.getter(#lOptions),
+        ),
+      ) as _i2.LinuxOptions);
+  @override
+  _i2.WindowsOptions get wOptions => (super.noSuchMethod(
+        Invocation.getter(#wOptions),
+        returnValue: _FakeWindowsOptions_3(
+          this,
+          Invocation.getter(#wOptions),
+        ),
+      ) as _i2.WindowsOptions);
+  @override
+  _i2.WebOptions get webOptions => (super.noSuchMethod(
+        Invocation.getter(#webOptions),
+        returnValue: _FakeWebOptions_4(
+          this,
+          Invocation.getter(#webOptions),
+        ),
+      ) as _i2.WebOptions);
+  @override
+  _i2.MacOsOptions get mOptions => (super.noSuchMethod(
+        Invocation.getter(#mOptions),
+        returnValue: _FakeMacOsOptions_5(
+          this,
+          Invocation.getter(#mOptions),
+        ),
+      ) as _i2.MacOsOptions);
+  @override
+  _i4.Future<void> write({
     required String? key,
     required String? value,
-    _i4.IOSOptions? iOptions = _i4.IOSOptions.defaultOptions,
-    _i4.AndroidOptions? aOptions,
-    _i4.LinuxOptions? lOptions,
+    _i2.IOSOptions? iOptions,
+    _i2.AndroidOptions? aOptions,
+    _i2.LinuxOptions? lOptions,
+    _i2.WebOptions? webOptions,
+    _i2.MacOsOptions? mOptions,
+    _i2.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -138,17 +251,23 @@ class MockFlutterSecureStorage extends _i1.Mock
             #iOptions: iOptions,
             #aOptions: aOptions,
             #lOptions: lOptions,
+            #webOptions: webOptions,
+            #mOptions: mOptions,
+            #wOptions: wOptions,
           },
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
   @override
-  _i3.Future<String?> read({
+  _i4.Future<String?> read({
     required String? key,
-    _i4.IOSOptions? iOptions = _i4.IOSOptions.defaultOptions,
-    _i4.AndroidOptions? aOptions,
-    _i4.LinuxOptions? lOptions,
+    _i2.IOSOptions? iOptions,
+    _i2.AndroidOptions? aOptions,
+    _i2.LinuxOptions? lOptions,
+    _i2.WebOptions? webOptions,
+    _i2.MacOsOptions? mOptions,
+    _i2.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -159,16 +278,22 @@ class MockFlutterSecureStorage extends _i1.Mock
             #iOptions: iOptions,
             #aOptions: aOptions,
             #lOptions: lOptions,
+            #webOptions: webOptions,
+            #mOptions: mOptions,
+            #wOptions: wOptions,
           },
         ),
-        returnValue: _i3.Future<String?>.value(),
-      ) as _i3.Future<String?>);
+        returnValue: _i4.Future<String?>.value(),
+      ) as _i4.Future<String?>);
   @override
-  _i3.Future<bool> containsKey({
+  _i4.Future<bool> containsKey({
     required String? key,
-    _i4.IOSOptions? iOptions = _i4.IOSOptions.defaultOptions,
-    _i4.AndroidOptions? aOptions,
-    _i4.LinuxOptions? lOptions,
+    _i2.IOSOptions? iOptions,
+    _i2.AndroidOptions? aOptions,
+    _i2.LinuxOptions? lOptions,
+    _i2.WebOptions? webOptions,
+    _i2.MacOsOptions? mOptions,
+    _i2.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -179,16 +304,22 @@ class MockFlutterSecureStorage extends _i1.Mock
             #iOptions: iOptions,
             #aOptions: aOptions,
             #lOptions: lOptions,
+            #webOptions: webOptions,
+            #mOptions: mOptions,
+            #wOptions: wOptions,
           },
         ),
-        returnValue: _i3.Future<bool>.value(false),
-      ) as _i3.Future<bool>);
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
   @override
-  _i3.Future<void> delete({
+  _i4.Future<void> delete({
     required String? key,
-    _i4.IOSOptions? iOptions = _i4.IOSOptions.defaultOptions,
-    _i4.AndroidOptions? aOptions,
-    _i4.LinuxOptions? lOptions,
+    _i2.IOSOptions? iOptions,
+    _i2.AndroidOptions? aOptions,
+    _i2.LinuxOptions? lOptions,
+    _i2.WebOptions? webOptions,
+    _i2.MacOsOptions? mOptions,
+    _i2.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -199,16 +330,22 @@ class MockFlutterSecureStorage extends _i1.Mock
             #iOptions: iOptions,
             #aOptions: aOptions,
             #lOptions: lOptions,
+            #webOptions: webOptions,
+            #mOptions: mOptions,
+            #wOptions: wOptions,
           },
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
   @override
-  _i3.Future<Map<String, String>> readAll({
-    _i4.IOSOptions? iOptions = _i4.IOSOptions.defaultOptions,
-    _i4.AndroidOptions? aOptions,
-    _i4.LinuxOptions? lOptions,
+  _i4.Future<Map<String, String>> readAll({
+    _i2.IOSOptions? iOptions,
+    _i2.AndroidOptions? aOptions,
+    _i2.LinuxOptions? lOptions,
+    _i2.WebOptions? webOptions,
+    _i2.MacOsOptions? mOptions,
+    _i2.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -218,15 +355,21 @@ class MockFlutterSecureStorage extends _i1.Mock
             #iOptions: iOptions,
             #aOptions: aOptions,
             #lOptions: lOptions,
+            #webOptions: webOptions,
+            #mOptions: mOptions,
+            #wOptions: wOptions,
           },
         ),
-        returnValue: _i3.Future<Map<String, String>>.value(<String, String>{}),
-      ) as _i3.Future<Map<String, String>>);
+        returnValue: _i4.Future<Map<String, String>>.value(<String, String>{}),
+      ) as _i4.Future<Map<String, String>>);
   @override
-  _i3.Future<void> deleteAll({
-    _i4.IOSOptions? iOptions = _i4.IOSOptions.defaultOptions,
-    _i4.AndroidOptions? aOptions,
-    _i4.LinuxOptions? lOptions,
+  _i4.Future<void> deleteAll({
+    _i2.IOSOptions? iOptions,
+    _i2.AndroidOptions? aOptions,
+    _i2.LinuxOptions? lOptions,
+    _i2.WebOptions? webOptions,
+    _i2.MacOsOptions? mOptions,
+    _i2.WindowsOptions? wOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -236,9 +379,12 @@ class MockFlutterSecureStorage extends _i1.Mock
             #iOptions: iOptions,
             #aOptions: aOptions,
             #lOptions: lOptions,
+            #webOptions: webOptions,
+            #mOptions: mOptions,
+            #wOptions: wOptions,
           },
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 }

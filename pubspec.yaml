@@ -23,13 +23,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.4
+  http: ^1.0.0
   crypto: ^3.0.1
   qrscan: ^0.3.2
-  permission_handler: ^8.2.5
-  flutter_secure_storage: ^4.2.1
+  permission_handler: ^10.2.0
+  flutter_secure_storage: ^8.0.0
   slider_button: ^2.0.0
-  device_info_plus: ^3.1.0
+  device_info_plus: ^9.0.2
   f_logs: ^2.0.0
   open_settings: ^2.0.2
 
