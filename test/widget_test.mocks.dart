@@ -105,12 +105,10 @@ class MockOpenerApi extends _i1.Mock implements _i3.OpenerApi {
         ),
         returnValueForMissingStub: null,
       );
-  @override
   String get hmac_key => (super.noSuchMethod(
         Invocation.getter(#hmac_key),
         returnValue: '',
       ) as String);
-  @override
   set hmac_key(String? _hmac_key) => super.noSuchMethod(
         Invocation.setter(
           #hmac_key,
@@ -118,12 +116,10 @@ class MockOpenerApi extends _i1.Mock implements _i3.OpenerApi {
         ),
         returnValueForMissingStub: null,
       );
-  @override
   String get device_info => (super.noSuchMethod(
         Invocation.getter(#device_info),
         returnValue: '',
       ) as String);
-  @override
   set device_info(String? _device_info) => super.noSuchMethod(
         Invocation.setter(
           #device_info,

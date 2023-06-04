@@ -6,14 +6,14 @@ import 'package:f_logs/f_logs.dart';
 import 'sjm.dart';
 
 class OpenerApi {
-    late String host, hmac_key, device_info;
+    late String host, hmacKey, deviceInfo;
     late int port;
     
-    void init(host, port, hmac_key, device_info) {
+    void init(host, port, hmacKey, deviceInfo) {
 	this.host = host;
 	this.port = port;
-	this.hmac_key = hmac_key;
-	this.device_info = device_info;
+	this.hmacKey = hmacKey;
+	this.deviceInfo = deviceInfo;
     }
     
     Future<String> open() async {
@@ -55,14 +55,14 @@ class OpenerApi {
 	    });
 	
 	String? helo, result;
-        String hmac = "", nonce = "";
+        String nonce = "";
 	String returnStatus = "unset";
 	try {
 	    await for (String data in lineReader) {
 		FLog.debug(text: "reading line '$data'");
 		if (helo == null) {
 		    helo = data;
-		    var sjm =  SignedJsonMessage.fromString(helo, this.hmac_key, "");
+		    var sjm =  SignedJsonMessage.fromString(helo, this.hmacKey, "");
 		    if (sjm.payload["version"] != 1) {
 			FLog.error(text: "incorrect protocol version");
 			FLog.error(text: "from $sjm");
@@ -70,20 +70,20 @@ class OpenerApi {
 		    }
 		    nonce = sjm.nonce;
 
-		    Map<String, String> json_cmd = new Map<String, String>();
-		    json_cmd["cmd"] = "open";
-		    json_cmd["nonce"] = nonce;
-		    json_cmd["device-info"] = this.device_info;
-		    var sjm2 = SignedJsonMessage(this.hmac_key, nonce);
-		    sjm2.set_payload(json_cmd);
+		    Map<String, String> jsonCmd = new Map<String, String>();
+		    jsonCmd["cmd"] = "open";
+		    jsonCmd["nonce"] = nonce;
+		    jsonCmd["device-info"] = this.deviceInfo;
+		    var sjm2 = SignedJsonMessage(this.hmacKey, nonce);
+		    sjm2.setPayload(jsonCmd);
 
-		    var send_line = sjm2.toString()+"\n";
-		    FLog.debug(text: "sending line '$send_line'");
-		    socket.write(send_line);
+		    var sendLine = sjm2.toString()+"\n";
+		    FLog.debug(text: "sending line '$sendLine'");
+		    socket.write(sendLine);
 		} else if (result == null) {
 		    result = data;
-		    var sjm = SignedJsonMessage.fromString(result, this.hmac_key, nonce);
-		    helo = hmac = result = nonce = "";
+		    SignedJsonMessage.fromString(result, this.hmacKey, nonce);
+		    helo = result = nonce = "";
 		    socket.destroy();
 		}
 		returnStatus = "Done";

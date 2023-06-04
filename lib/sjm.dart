@@ -21,7 +21,7 @@ class SignedJsonMessage {
     String get nonce => _header["nonce"] ?? "";
     Map<String, dynamic> get payload => _payload;
     
-    void set_payload(Map<String, dynamic> payload) {
+    void setPayload(Map<String, dynamic> payload) {
 	this._payload = payload;
     }
 
@@ -34,30 +34,30 @@ class SignedJsonMessage {
 	return hp + "." + base64.encode(digest.bytes);
     }
 
-    factory SignedJsonMessage.fromString(String s, String key, String expected_nonce) {
+    factory SignedJsonMessage.fromString(String s, String key, String expectedNonce) {
 	// equivalent to s.rsplit(".", 1)
 	int idx = s.lastIndexOf(".");
-	var encoded_header_payload = s.substring(0,idx).trim();
-	var encoded_signature = s.substring(idx+1).trim();
-	var recv_sig = base64.decode(encoded_signature);
+	var encodedHeaderPayload = s.substring(0,idx).trim();
+	var encodedSignature = s.substring(idx+1).trim();
+	var recvSig = base64.decode(encodedSignature);
 	var hmac = new Hmac(sha256, utf8.encode(key));
-	var calculated_sig = hmac.convert(utf8.encode(encoded_header_payload));
-	if (calculated_sig.bytes.toString() != recv_sig.toString()) {
+	var calculatedSig = hmac.convert(utf8.encode(encodedHeaderPayload));
+	if (calculatedSig.bytes.toString() != recvSig.toString()) {
 	    throw("incorrect signature");
 	}
-	idx = encoded_header_payload.indexOf(".");
-	var encoded_header = encoded_header_payload.substring(0, idx).trim();
-	var encoded_payload = encoded_header_payload.substring(idx+1).trim();
-	var header = jsonDecode(utf8.decode(base64.decode(encoded_header)));
-	var payload = jsonDecode(utf8.decode(base64.decode(encoded_payload)));
+	idx = encodedHeaderPayload.indexOf(".");
+	var encodedHeader = encodedHeaderPayload.substring(0, idx).trim();
+	var encodedPayload = encodedHeaderPayload.substring(idx+1).trim();
+	var header = jsonDecode(utf8.decode(base64.decode(encodedHeader)));
+	var payload = jsonDecode(utf8.decode(base64.decode(encodedPayload)));
 	var nonce = header["nonce"];
-	if (expected_nonce! != "") {
-	    if (nonce != expected_nonce) {
-		throw("incorrect nonce (${nonce} != ${expected_nonce})");
+	if (expectedNonce != "") {
+	    if (nonce != expectedNonce) {
+		throw("incorrect nonce ($nonce != $expectedNonce)");
 	    }
 	}
 	var sjm = SignedJsonMessage(key, nonce);
-	sjm.set_payload(payload);
+	sjm.setPayload(payload);
 	return sjm;
     }
 }

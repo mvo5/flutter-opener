@@ -57,7 +57,7 @@ void main() {
 
 	// Verify that it tries to open the door
 	expect(find.byKey(Key("label_status")), findsOneWidget);
-	var label_status = find.byKey(Key("label_status")).evaluate().first.widget as Text;
-	expect(label_status.data, "Opening...");
+	var labelStatus = find.byKey(Key("label_status")).evaluate().first.widget as Text;
+	expect(labelStatus.data, "Opening...");
     });
 }
