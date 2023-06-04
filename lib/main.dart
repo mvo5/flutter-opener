@@ -67,7 +67,10 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 
     // this is read from the security store at startup
     // XXX: make it a list to support multiple doors
-    Map<String, dynamic> cfg = new Map<String, dynamic>();
+    // XXX2: ugly workaround for not being able to assign "null" to the map
+    Map<String, dynamic> cfg = {
+	"state": "initializing",
+    };
 
     // will be mocked in tests
     late OpenerApi opener;
@@ -134,7 +137,8 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     }
 
     Widget getOpenOrSpinnerWidget() {
-	if (cfg == null) {
+	// XXX: ugly
+	if (cfg.length == 1 && cfg["state"] == "initializing") {
 	    return Column(
 		crossAxisAlignment: CrossAxisAlignment.center,
 		children: <Widget>[

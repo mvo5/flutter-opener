@@ -10,6 +10,7 @@ jobs:
         channel: 'stable'
     - run: flutter --version
     - run: flutter test
+    - run: flutter analyze
     - run: flutter test --coverage
     - uses: codecov/codecov-action@v3
       with:
