@@ -4,8 +4,6 @@ import 'dart:io';
 
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:crypto/crypto.dart';
 
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:permission_handler/permission_handler.dart';
@@ -16,7 +14,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:open_settings/open_settings.dart';
 
-import 'sjm.dart';
 import 'api.dart';
 
 void main() {
@@ -90,19 +87,19 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     }
 
     readCfg() async {
-	final json_cfg = await storage.read(key: "cfg");
+	final jsonCfg = await storage.read(key: "cfg");
 	setState(() {
-	    if (json_cfg != null) {
-		this.cfg = json.decode(json_cfg);
+	    if (jsonCfg != null) {
+		this.cfg = json.decode(jsonCfg);
 	    } else {
 		this.cfg = Map<String, dynamic>();
-	    };
+	    }
 	    _statusText = "Ready";
 	});
     }
     
     Future<String> callOpenerApi() async {
-	final hmac_key = cfg["hmac-key"];
+	final hmacKey = cfg["hmac-key"];
 	final host = cfg["hostname"];
 	final port = 8877;
 
@@ -112,12 +109,12 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 
 	// XXX: ideally we would get the "device_name" here but flutter
 	// seems to have no way to get it
-	var device_info = "unknown";
+	var info = "unknown";
 	if (Platform.isAndroid) {
 	    final androidInfo = await deviceInfo.androidInfo;
-	    device_info = "${androidInfo.model}/${androidInfo.host}";
+	    info = "${androidInfo.model}/${androidInfo.host}";
 	}
-	opener.init(host, port, hmac_key, device_info);
+	opener.init(host, port, hmacKey, info);
 	
 	// XXX: use exceptions?
 	var returnStatus = opener.open();
@@ -182,7 +179,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 		    });
 		    doCallOpenerApi();
 		});
-	};
+	}
     }
 
     Future scanSecret() async {
@@ -191,9 +188,9 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	if (cameraScanResult == null || cameraScanResult == "") {
 	    return;
 	}
-	var json_cfg = cameraScanResult;
+	var jsonCfg = cameraScanResult;
 	// XXX: do basic validation?
-	await storage.write(key: "cfg", value: json_cfg);
+	await storage.write(key: "cfg", value: jsonCfg);
 
 	await readCfg();
     }
@@ -208,7 +205,6 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	FLog.printLogs();
 
 	// to the widget
-	var formatter = Formatter();
 	var logs = await FLog.getAllLogs();
 	var buffer = StringBuffer();
 	setState(() {

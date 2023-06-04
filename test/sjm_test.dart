@@ -5,7 +5,7 @@ import 'package:muopener/sjm.dart';
 void main() {
     test('SignedJsonMessage signed smoke', () {
 	var sjm = SignedJsonMessage("key", "nonce");
-	sjm.set_payload({"foo": "bar"});
+	sjm.setPayload({"foo": "bar"});
 	expect(sjm.nonce, equals("nonce"));
     });
 
