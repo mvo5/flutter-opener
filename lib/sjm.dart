@@ -6,8 +6,8 @@ import 'package:crypto/crypto.dart';
 class SignedJsonMessage {
     String key;
     String _nonce;
-    Map<String, String> _header;
-    Map<String, dynamic> _payload;
+    late Map<String, String> _header;
+    late Map<String, dynamic> _payload;
 
     SignedJsonMessage(this.key, this._nonce) {
 	this._header =  {
@@ -18,7 +18,7 @@ class SignedJsonMessage {
 	this._payload = {};
     }
 
-    String get nonce => _header["nonce"];
+    String get nonce => _header["nonce"] ?? "";
     Map<String, dynamic> get payload => _payload;
     
     void set_payload(Map<String, dynamic> payload) {
@@ -50,12 +50,12 @@ class SignedJsonMessage {
 	var encoded_payload = encoded_header_payload.substring(idx+1).trim();
 	var header = jsonDecode(utf8.decode(base64.decode(encoded_header)));
 	var payload = jsonDecode(utf8.decode(base64.decode(encoded_payload)));
-	if (expected_nonce != "") {
-	    if (header["nonce"] != expected_nonce) {
-		throw("incorrect nonce");
+	var nonce = header["nonce"];
+	if (expected_nonce! != "") {
+	    if (nonce != expected_nonce) {
+		throw("incorrect nonce (${nonce} != ${expected_nonce})");
 	    }
 	}
-	var nonce = header["nonce"];
 	var sjm = SignedJsonMessage(key, nonce);
 	sjm.set_payload(payload);
 	return sjm;

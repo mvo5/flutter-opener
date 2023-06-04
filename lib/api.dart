@@ -6,8 +6,8 @@ import 'package:f_logs/f_logs.dart';
 import 'sjm.dart';
 
 class OpenerApi {
-    String host, hmac_key, device_info;
-    int port;
+    late String host, hmac_key, device_info;
+    late int port;
     
     void init(host, port, hmac_key, device_info) {
 	this.host = host;
@@ -33,10 +33,10 @@ class OpenerApi {
 		text: "socket exception for ${this.host}",
 		exception: error);
 	    // XXX: android specific
-	    if (error.osError.errorCode == 7) {
+	    if (error.osError?.errorCode == 7) {
 		return "cannot find ${this.host}: not fully connected yet?";
 	    }
-	    if (error.osError.errorCode == 111) {
+	    if (error.osError?.errorCode == 111) {
 		return "cannot connect ${this.host}: $error (esp32 doing the watchdog race?)";
 	    }
 	    return "cannot connect (socket error) to ${this.host}: $error";
@@ -54,11 +54,12 @@ class OpenerApi {
 		socket.close();
 	    });
 	
-	String helo, hmac, result, nonce;
+	String? helo, result;
+        String hmac = "", nonce = "";
 	String returnStatus = "unset";
 	try {
 	    await for (String data in lineReader) {
-		FLog.debug(text: "line $data read");
+		FLog.debug(text: "reading line '$data'");
 		if (helo == null) {
 		    helo = data;
 		    var sjm =  SignedJsonMessage.fromString(helo, this.hmac_key, "");
@@ -75,8 +76,10 @@ class OpenerApi {
 		    json_cmd["device-info"] = this.device_info;
 		    var sjm2 = SignedJsonMessage(this.hmac_key, nonce);
 		    sjm2.set_payload(json_cmd);
-		    
-		    await socket.write(sjm2.toString()+"\n");
+
+		    var send_line = sjm2.toString()+"\n";
+		    FLog.debug(text: "sending line '$send_line'");
+		    socket.write(send_line);
 		} else if (result == null) {
 		    result = data;
 		    var sjm = SignedJsonMessage.fromString(result, this.hmac_key, nonce);

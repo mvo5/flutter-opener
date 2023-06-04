@@ -35,7 +35,7 @@ class OpenerApp extends StatelessWidget {
 }
 
 class OpenerHomePage extends StatefulWidget {
-    OpenerHomePage({Key key, this.title}) : super(key: key);
+    OpenerHomePage({super.key, required this.title});
     final String title;
     
     @override
@@ -70,11 +70,11 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 
     // this is read from the security store at startup
     // XXX: make it a list to support multiple doors
-    Map<String, dynamic> cfg = null;
+    Map<String, dynamic> cfg = new Map<String, dynamic>();
 
     // will be mocked in tests
-    OpenerApi opener;
-    FlutterSecureStorage storage;
+    late OpenerApi opener;
+    late FlutterSecureStorage storage;
 
     void initState() {
 	super.initState();
@@ -86,7 +86,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     }
 
     initLogs() async {
-	await FLog.applyConfigurations(logCfg);
+	FLog.applyConfigurations(logCfg);
     }
 
     readCfg() async {
@@ -115,7 +115,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	var device_info = "unknown";
 	if (Platform.isAndroid) {
 	    final androidInfo = await deviceInfo.androidInfo;
-	    device_info = androidInfo.model+"/"+androidInfo.host;
+	    device_info = "${androidInfo.model}/${androidInfo.host}";
 	}
 	opener.init(host, port, hmac_key, device_info);
 	
@@ -187,7 +187,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 
     Future scanSecret() async {
 	await Permission.camera.request();
-	String cameraScanResult = await scanner.scan();
+	var cameraScanResult = await scanner.scan();
 	if (cameraScanResult == null || cameraScanResult == "") {
 	    return;
 	}

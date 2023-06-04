@@ -15,4 +15,11 @@ void main() {
 	// XXX: test more
 	expect(sjm.payload, equals({}));
     });
+
+    test('SignedJsonMessage.from_string expected nonce is optional', () {
+	var s = "eyJ2ZXIiOiAiMSIsICJhbGciOiAiSFMyNTYiLCAibm9uY2UiOiAibm9uY2UifQ==.e30=.iCQB3KZ4Kd9wnDrhYtTF/TBX3iJLFgApBfX+wMGw5hY=";
+	var sjm = SignedJsonMessage.fromString(s, "key", "");
+	// XXX: test more
+	expect(sjm.payload, equals({}));
+    });
 }
