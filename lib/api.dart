@@ -54,12 +54,12 @@ class OpenerApi {
 		socket.close();
 	    });
 	
-	String? helo, result, nonce;
-        String hmac;
+	String? helo, result;
+        String hmac = "", nonce = "";
 	String returnStatus = "unset";
 	try {
 	    await for (String data in lineReader) {
-		FLog.debug(text: "line $data read");
+		FLog.debug(text: "reading line '$data'");
 		if (helo == null) {
 		    helo = data;
 		    var sjm =  SignedJsonMessage.fromString(helo, this.hmac_key, "");
@@ -72,14 +72,14 @@ class OpenerApi {
 
 		    Map<String, String> json_cmd = new Map<String, String>();
 		    json_cmd["cmd"] = "open";
-                    if (nonce != null) {
-		        json_cmd["nonce"] = nonce!;
-                    }
+		    json_cmd["nonce"] = nonce;
 		    json_cmd["device-info"] = this.device_info;
 		    var sjm2 = SignedJsonMessage(this.hmac_key, nonce);
 		    sjm2.set_payload(json_cmd);
-		    
-		    socket.write(sjm2.toString()+"\n");
+
+		    var send_line = sjm2.toString()+"\n";
+		    FLog.debug(text: "sending line '$send_line'");
+		    socket.write(send_line);
 		} else if (result == null) {
 		    result = data;
 		    var sjm = SignedJsonMessage.fromString(result, this.hmac_key, nonce);
