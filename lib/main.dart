@@ -13,6 +13,7 @@ import 'package:slider_button/slider_button.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:open_settings/open_settings.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'api.dart';
 
@@ -72,6 +73,9 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	"state": "initializing",
     };
 
+    // connectivity changes
+    StreamSubscription<ConnectivityResult> connChanged;
+
     // will be mocked in tests
     late OpenerApi opener;
     late FlutterSecureStorage storage;
@@ -83,6 +87,15 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	this.storage = new FlutterSecureStorage();
 	this.opener = new OpenerApi();
 	readCfg();
+
+	initNetworkListener();
+    }
+
+    @override
+    dispose() {
+	super.dispose();
+
+	connChanged.cancel();
     }
 
     initLogs() async {
@@ -100,7 +113,30 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	    _statusText = "Ready";
 	});
     }
-    
+
+    setNetworkStatus(ConnectivityResult result) {
+	var s = "Ready";
+	if (result != ConnectivityResult.wifi) {
+	    // XXX: use network_info_plus to get the name of the wifi
+	    //      and warn if the wifi.ssid != cfg["ssid"]
+	    s = "WARNING: not connected to wifi";
+	}
+	setState(() {
+	    _statusText = s;
+	});
+    }
+
+    initNetworkListener() async {
+	// set initial
+	var result = await (Connectivity().checkConnectivity());
+	setNetworkStatus(result);
+
+	// listen for changes
+	connChanged = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+	    setNetworkStatus(result);
+	});
+    }
+
     Future<String> callOpenerApi() async {
 	final hmacKey = cfg["hmac-key"];
 	final host = cfg["hostname"];
