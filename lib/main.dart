@@ -125,7 +125,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	var info = "$_deviceName";
 	if (Platform.isAndroid) {
 	    final androidInfo = await deviceInfo.androidInfo;
-	    info = "$_deviceName ($androidInfo.model}/${androidInfo.host})";
+	    info = "$_deviceName (${androidInfo.model}/${androidInfo.host})";
 	}
 	opener.init(host, port, hmacKey, info);
 	

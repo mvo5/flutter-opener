@@ -28,6 +28,7 @@ void main() {
 	);
 	
 	var opener = MockOpenerApi();
+	// TODO: add test that device-info is correct
 	when(opener.init("opener", 8877, "hmackey", "unknown")).thenReturn(0);
 	when(opener.open()).thenAnswer((_) async => "Opening...");
 
