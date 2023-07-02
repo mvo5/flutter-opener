@@ -106,6 +106,14 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 
     // get the name of the phone as advertised via bluetooth
     initDeviceNameFromBluetooth() async {
+        var status = await Permission.bluetoothConnect.status;
+        if (status.isDenied) {
+            await Permission.bluetoothConnect.request();
+        }
+        if (await Permission.bluetoothConnect.status.isPermanentlyDenied) {
+            openAppSettings();
+        }
+
 	final flutterBlue = fble.FlutterBluePlus.instance;
 	_deviceName = await flutterBlue.name;
 	FLog.debug(text: "bluetooth device name: $_deviceName");
