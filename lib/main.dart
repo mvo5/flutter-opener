@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart' as fble;
 // XXX: move to biometric storage
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:slider_button/slider_button.dart';
@@ -44,6 +45,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     bool _openerCall = false;
     String _statusText = "";
     String _logsText = "";
+    String _deviceName = "unsetb device name";
     final logCfg = FLog.getDefaultConfigurations()
 	  ..formatType = FormatType.FORMAT_CUSTOM
 	  ..customClosingDivider = ":"
@@ -83,6 +85,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	this.storage = new FlutterSecureStorage();
 	this.opener = new OpenerApi();
 	readCfg();
+        initDeviceNameFromBluetooth();
     }
 
     initLogs() async {
@@ -100,6 +103,13 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	    _statusText = "Ready";
 	});
     }
+
+    // get the name of the phone as advertised via bluetooth
+    initDeviceNameFromBluetooth() async {
+	final flutterBlue = fble.FlutterBluePlus.instance;
+	_deviceName = await flutterBlue.name;
+	FLog.debug(text: "bluetooth device name: $_deviceName");
+    }
     
     Future<String> callOpenerApi() async {
 	final hmacKey = cfg["hmac-key"];
@@ -112,10 +122,10 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 
 	// XXX: ideally we would get the "device_name" here but flutter
 	// seems to have no way to get it
-	var info = "unknown";
+	var info = "$_deviceName";
 	if (Platform.isAndroid) {
 	    final androidInfo = await deviceInfo.androidInfo;
-	    info = "${androidInfo.model}/${androidInfo.host}";
+	    info = "$_deviceName ($androidInfo.model}/${androidInfo.host})";
 	}
 	opener.init(host, port, hmacKey, info);
 	
