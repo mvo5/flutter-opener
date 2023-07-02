@@ -18,7 +18,7 @@
         android:icon="@mipmap/launcher_icon"
 	tools:replace="android:icon">
         <activity
-            android:name="MainActivity"
+            android:name="io.flutter.embedding.android.FlutterActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
