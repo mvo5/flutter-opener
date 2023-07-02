@@ -3,6 +3,7 @@
 *.log
 *.pyc
 *.swp
+*~
 .DS_Store
 .atom/
 .buildlog/
@@ -39,3 +40,6 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# private key data
+android/key.properties
