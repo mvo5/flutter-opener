@@ -114,8 +114,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
             openAppSettings();
         }
 
-	final flutterBlue = fble.FlutterBluePlus.instance;
-	_deviceName = await flutterBlue.name;
+	_deviceName = await fble.FlutterBluePlus.adapterName;
 	FLog.debug(text: "bluetooth device name: $_deviceName");
     }
     
