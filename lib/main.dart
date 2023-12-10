@@ -27,7 +27,12 @@ class OpenerApp extends StatelessWidget {
     Widget build(BuildContext context) {
 	return MaterialApp(
 	    title: 'Opener',
+		theme: new ThemeData(
+			scaffoldBackgroundColor: const Color(0xFF00001f),
+			appBarTheme: AppBarTheme(color: const Color(0xFF00001f)),
+		),
 	    home: OpenerHomePage(title: 'μ Opener'),
+
 	);
     }
 }
@@ -165,7 +170,12 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	    return Column(
 		crossAxisAlignment: CrossAxisAlignment.center,
 		children: <Widget>[
-		    Text("No configuration yet"),
+		    Text(
+				"No configuration yet",
+				style: TextStyle(
+    			color: Colors.white,
+				)
+			),
 		    Container(
 			child: ElevatedButton(
 			    child: Text("Scan setting"),
@@ -183,7 +193,9 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 	    );
 	} else {
 	    return SliderButton(
-		label: Text("Slide to open"),
+		label: Text(
+			"Slide to open"
+			),
 		icon: Icon(Icons.lock_open),
 		// XXX: workaround for
 		// https://github.com/anirudhsharma392/Slider-Button/issues/21
@@ -292,13 +304,22 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 		child: Column(
 		    crossAxisAlignment: CrossAxisAlignment.center,
 		    children: <Widget>[
-			Text(_statusText, key: Key("label_status")),
+			Text(_statusText, 
+			style: TextStyle(
+                color: Colors.white,
+			),
+			key: Key("label_status")
+			),
 			Expanded(child: Container(),),
 			Center(child: getOpenOrSpinnerWidget()),
 			Expanded(
 			    child: SingleChildScrollView(
 				scrollDirection: Axis.vertical,
-				child: Text(_logsText, textAlign: TextAlign.left,),
+				child: Text(_logsText, 
+				 style: TextStyle(
+                  color: Colors.white, 
+                ),
+				textAlign: TextAlign.left,),
 			    ),
 			),
 		    ],
