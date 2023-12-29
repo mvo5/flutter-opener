@@ -26,7 +26,9 @@ class OpenerApp extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
 	return MaterialApp(
-	    title: 'Opener',
+	    theme: ThemeData(),
+	    darkTheme: ThemeData.dark(),
+	    themeMode: ThemeMode.system,
 	    home: OpenerHomePage(title: 'μ Opener'),
 	);
     }
