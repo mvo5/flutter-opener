@@ -195,12 +195,13 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 		    spreadRadius: 2.0,
 		    offset: Offset.zero
 		),
-		action: () {
+		action: () async{
 		    FLog.debug(text: "slider button action");
 		    setState(() {
-			_openerCall = true;
+			      _openerCall = true;
 		    });
 		    doCallOpenerApi();
+        return true;
 		});
 	}
     }
