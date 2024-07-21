@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-
 import 'package:flutter/material.dart';
 
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -26,10 +25,20 @@ class OpenerApp extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
 	return MaterialApp(
-	    title: 'Opener',
-	    home: OpenerHomePage(title: 'μ Opener'),
-	);
-    }
+      theme: new ThemeData(
+          useMaterial3: true,
+          scaffoldBackgroundColor: Color(0xFF00001f),
+          appBarTheme: AppBarTheme(
+              color: const Color(0xFF00001f),
+              titleTextStyle: TextStyle(color: Colors.white)),
+          textTheme:
+              const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
+      //darkTheme: ThemeData.dark(),
+      //
+      themeMode: ThemeMode.system,
+      home: OpenerHomePage(title: 'μ Opener'),
+    );
+  }
 }
 
 class OpenerHomePage extends StatefulWidget {
@@ -193,12 +202,13 @@ class OpenerHomePageState extends State<OpenerHomePage> {
 		    spreadRadius: 2.0,
 		    offset: Offset.zero
 		),
-		action: () {
+		action: () async{
 		    FLog.debug(text: "slider button action");
 		    setState(() {
-			_openerCall = true;
+			      _openerCall = true;
 		    });
 		    doCallOpenerApi();
+        return true;
 		});
 	}
     }
