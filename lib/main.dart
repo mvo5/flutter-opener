@@ -25,16 +25,13 @@ class OpenerApp extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
 	return MaterialApp(
-      theme: new ThemeData(
-          useMaterial3: true,
+      theme: ThemeData.light(),
+        darkTheme: new ThemeData(
           scaffoldBackgroundColor: Color(0xFF00001f),
           appBarTheme: AppBarTheme(
               color: const Color(0xFF00001f),
-              titleTextStyle: TextStyle(color: Colors.white)),
-          textTheme:
-              const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
-      //darkTheme: ThemeData.dark(),
-      //
+          ),
+        ),
       themeMode: ThemeMode.system,
       home: OpenerHomePage(title: 'μ Opener'),
     );
