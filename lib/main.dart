@@ -26,12 +26,7 @@ class OpenerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light(),
-      darkTheme: new ThemeData(
-        scaffoldBackgroundColor: Color(0xFF00001f),
-        appBarTheme: AppBarTheme(
-          color: const Color(0xFF00001f),
-        ),
-      ),
+      darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
       home: OpenerHomePage(title: 'μ Opener'),
     );
@@ -189,7 +184,10 @@ class OpenerHomePageState extends State<OpenerHomePage> {
     } else {
       return SliderButton(
           label: Text("Slide to open"),
-          icon: Icon(Icons.lock_open),
+          icon: Icon(
+            Icons.lock_open,
+            color: Colors.black,
+          ),
           // XXX: workaround for
           // https://github.com/anirudhsharma392/Slider-Button/issues/21
           boxShadow: BoxShadow(
