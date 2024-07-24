@@ -46,7 +46,7 @@ class OpenerHomePageState extends State<OpenerHomePage> {
   bool _openerCall = false;
   String _statusText = "";
   String _logsText = "";
-  String _deviceName = "unsetb device name";
+  String _deviceName = "unset device name";
   final logCfg = FLog.getDefaultConfigurations()
     ..formatType = FormatType.FORMAT_CUSTOM
     ..customClosingDivider = ":"
@@ -109,10 +109,14 @@ class OpenerHomePageState extends State<OpenerHomePage> {
   initDeviceNameFromBluetooth() async {
     var status = await Permission.bluetoothConnect.status;
     if (status.isDenied) {
-      await Permission.bluetoothConnect.request();
+      status = await Permission.bluetoothConnect.request();
     }
-    if (await Permission.bluetoothConnect.status.isPermanentlyDenied) {
+    if (status.isPermanentlyDenied) {
       openAppSettings();
+    }
+    if (status.isDenied) {
+      _deviceName = "unknown device name (no permission)";
+      return;
     }
 
     _deviceName = await fble.FlutterBluePlus.adapterName;
