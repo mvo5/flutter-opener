@@ -166,7 +166,8 @@ class OpenerHomePageState extends State<OpenerHomePage> {
           children: <Widget>[
             Text("Initializing..."),
           ]);
-    } else if (cfg.length == 0) {
+    }
+    if (cfg.length == 0) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -180,34 +181,34 @@ class OpenerHomePageState extends State<OpenerHomePage> {
           ),
         ],
       );
-    } else if (_openerCall) {
+    }
+    if (_openerCall) {
       return new Container(
         child: CircularProgressIndicator(),
         padding: EdgeInsets.all(64),
       );
-    } else {
-      return SliderButton(
-          label: Text("Slide to open"),
-          icon: Icon(
-            Icons.lock_open,
-            color: Colors.black,
-          ),
-          // XXX: workaround for
-          // https://github.com/anirudhsharma392/Slider-Button/issues/21
-          boxShadow: BoxShadow(
-              color: Theme.of(context).primaryColor,
-              blurRadius: 2.0,
-              spreadRadius: 2.0,
-              offset: Offset.zero),
-          action: () async {
-            FLog.debug(text: "slider button action");
-            setState(() {
-              _openerCall = true;
-            });
-            doCallOpenerApi();
-            return true;
-          });
     }
+    return SliderButton(
+        label: Text("Slide to open"),
+        icon: Icon(
+          Icons.lock_open,
+          color: Colors.black,
+        ),
+        // XXX: workaround for
+        // https://github.com/anirudhsharma392/Slider-Button/issues/21
+        boxShadow: BoxShadow(
+            color: Theme.of(context).primaryColor,
+            blurRadius: 2.0,
+            spreadRadius: 2.0,
+            offset: Offset.zero),
+        action: () async {
+          FLog.debug(text: "slider button action");
+          setState(() {
+            _openerCall = true;
+          });
+          doCallOpenerApi();
+          return true;
+        });
   }
 
   Future scanSecret() async {
