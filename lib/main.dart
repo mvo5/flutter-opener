@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-
 import 'package:flutter/material.dart';
 
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -26,12 +25,17 @@ class OpenerApp extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
 	return MaterialApp(
-	    theme: ThemeData(),
-	    darkTheme: ThemeData.dark(),
-	    themeMode: ThemeMode.system,
-	    home: OpenerHomePage(title: 'μ Opener'),
-	);
-    }
+      theme: ThemeData.light(),
+        darkTheme: new ThemeData(
+          scaffoldBackgroundColor: Color(0xFF00001f),
+          appBarTheme: AppBarTheme(
+              color: const Color(0xFF00001f),
+          ),
+        ),
+      themeMode: ThemeMode.system,
+      home: OpenerHomePage(title: 'μ Opener'),
+    );
+  }
 }
 
 class OpenerHomePage extends StatefulWidget {
