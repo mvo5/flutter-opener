@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart' as fble;
 // XXX: move to biometric storage
@@ -12,7 +12,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:slider_button/slider_button.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:open_settings/open_settings.dart';
+import 'package:open_settings_plus/open_settings_plus.dart';
 
 import 'api.dart';
 
@@ -216,9 +216,29 @@ class OpenerHomePageState extends State<OpenerHomePage> {
         });
   }
 
+  Future<String?> _scanQrCode() async {
+    // The showDialog function itself returns a Future. We'll return that.
+    return await showDialog<String>(
+      context: context,
+      builder: (context) => Dialog(
+        child: SizedBox(
+          width: 300,
+          height: 300,
+          child: MobileScanner(
+            onDetect: (capture) {
+              final barcode = capture.barcodes.firstOrNull;
+              // Pop the dialog and pass the barcode's raw value as the result.
+              Navigator.of(context).pop(barcode?.rawValue);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   Future scanSecret() async {
     await Permission.camera.request();
-    var cameraScanResult = await scanner.scan();
+    var cameraScanResult = await _scanQrCode();
     if (cameraScanResult == null || cameraScanResult == "") {
       return;
     }
@@ -260,7 +280,8 @@ class OpenerHomePageState extends State<OpenerHomePage> {
   void onSelectedClick(String value) {
     switch (value) {
       case 'Open WiFi settings':
-        OpenSettings.openWIFISetting();
+        OpenSettingsPlusAndroid settings = OpenSettingsPlusAndroid();
+        settings.wifi();
         break;
       case 'Scan settings':
         scanSecret();
