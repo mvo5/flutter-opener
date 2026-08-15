@@ -27,7 +27,10 @@ dependencies:
   crypto: ^3.0.1
   mobile_scanner: ^7.0.1
   permission_handler: ^13.0.1
-  flutter_secure_storage: ^11.0.0
+  # Pinned to v10 so data written by v8 is migrated to the new cipher format
+  # on first launch. Move to ^11.0.0 once (nearly) all users have run a v10-based
+  # release at least once — v11 removes the legacy cipher code entirely.
+  flutter_secure_storage: ^10.3.1
   slider_button: ^3.1.0
   device_info_plus: ^13.2.0
   f_logs: ^2.0.0
